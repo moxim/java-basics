@@ -12,18 +12,12 @@ interface Printer {
 
 class DruckerUser {
     public void machMalDruck() {
-        GenericPrinter.erstelleTollenDruck(new Printer() {
-            @Override
-            public void print() {
-                // drucke als PDF und in Farbe
-            }
+        GenericPrinter.erstelleTollenDruck(() -> {
+            // drucke als PDF und in Farbe
         });
 
-        GenericPrinter.erstelleTollenDruck(new Printer() {
-            @Override
-            public void print() {
-                // drucke als Postscript in Schwarz-Weiss
-            }
+        GenericPrinter.erstelleTollenDruck(() -> {
+            // drucke als Postscript in Schwarz-Weiss
         });
     }
 }
