@@ -1,4 +1,4 @@
-package ch.finnova.java.schulung.basic.calsstack;
+package ch.finnova.java.schulung.basic.callsstack;
 
 public class Derived extends Base {
     public Derived(int parameter) {
