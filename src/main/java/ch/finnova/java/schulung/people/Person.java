@@ -2,6 +2,7 @@ package ch.finnova.java.schulung.people;
 
 public class Person {
     private static String name;
+    private Object coolThing;
 
     public void setName(String newName) {
         name = newName; // referencing a static variable from within a non-static method is pretty darn dangerous
@@ -17,6 +18,10 @@ public class Person {
 
     public void sayHelloTo(Person eve) {
         System.out.println(name + " says: Hello " + eve.getName());
+    }
+
+    public static void doSomethingCool() {
+        coolThing = null; // this is impossible
     }
 
      public static void main(String[] args) {
