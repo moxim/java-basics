@@ -4,7 +4,7 @@ public class Person {
     private final String name;
 
     public void setName(String newName) {
-        name = newName;
+        name = newName; // this won't work
     }
 
     public Person(String newName) {
