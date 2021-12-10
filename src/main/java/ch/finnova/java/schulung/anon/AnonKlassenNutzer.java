@@ -15,6 +15,13 @@ public class AnonKlassenNutzer {
                 // hier passiert etwas tolles
             }
         };
+
+        Painter o = new Painter() {
+            @Override
+            public void doIt() {
+                super.doIt();
+            }
+        };
    }
 }
 
@@ -24,4 +31,10 @@ interface Marker {
 
 abstract class Pointer {
     public abstract void point();
+}
+
+class Painter {
+    public void doIt()  {
+        // cool stuff happens here
+    }
 }
