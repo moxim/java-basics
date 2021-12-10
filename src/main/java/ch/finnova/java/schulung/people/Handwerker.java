@@ -1,11 +1,11 @@
 package ch.finnova.java.schulung.people;
 
-import java.util.List;
-
 public class Handwerker extends Person {
-    private List werkzeuge;
+    private String name;
 
-    public List showTools() {
-        return werkzeuge;
+    @Override
+    public void doSomethingCool() {
+        super.doSomethingCool();
     }
+
 }
