@@ -8,11 +8,14 @@
     <node x="100.5" y="0.0">ch.finnova.java.schulung.people.Person</node>
   </nodes>
   <notes>
-    <note x="137.0" y="-48.0">
+    <note x="335.0" y="89.0">
       <node>ch.finnova.java.schulung.people.Person</node>
       <value>&lt;&lt;abstract&gt;&gt;</value>
       <edge>
         <point x="0.0" y="0.0" />
+        <point x="189.5" y="38.5" />
+        <point x="166.5" y="38.5" />
+        <point x="166.5" y="111.0" />
         <point x="0.0" y="0.0" />
       </edge>
     </note>
@@ -31,7 +34,7 @@
       <point x="0.0" y="60.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic" zoom="1.0" showDependencies="false" x="189.0" y="134.0" />
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="false" x="648.0" y="133.0" />
   <SelectedNodes />
   <Categories>
     <Category>Fields</Category>
