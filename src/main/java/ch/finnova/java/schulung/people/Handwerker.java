@@ -3,9 +3,9 @@ package ch.finnova.java.schulung.people;
 import java.util.List;
 
 public class Handwerker extends Person {
-    private List werkzeuge;
+    private List<Werkzeug> werkzeuge;
 
-    public List showTools() {
+    public List<Werkzeug> showTools() {
         return werkzeuge;
     }
 }

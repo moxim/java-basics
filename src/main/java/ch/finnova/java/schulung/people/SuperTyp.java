@@ -15,8 +15,6 @@ class Checker {
 
         SuperTyp<Programmierer> superProgrammierer = new SuperTyp<>();
         Programmierer p = superProgrammierer.getPersonType();
-
-
     }
 }
 
