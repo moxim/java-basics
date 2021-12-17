@@ -8,4 +8,8 @@ public class Handwerker extends Person {
         super.doSomethingCool();
     }
 
+    @Override
+    public void sayHello() {
+        // hier wird geplappert
+   }
 }

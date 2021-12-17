@@ -8,9 +8,10 @@ public class Person {
     }
 
     public void sayHello() {
-        use(this.name); // hier wird geplappert
+        // hier wird geplappert
    }
 
-    private void use(String aName) {
+    private void useName(String name) {
+        this.name = name;
     }
 }
