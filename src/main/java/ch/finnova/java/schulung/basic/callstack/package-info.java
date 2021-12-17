@@ -6,5 +6,5 @@
  *
  * Es gibt aber auch package-eigenen Annotation eine Heimat. Zu Annotationen kommen wir noch später.
  */
-package ch.finnova.java.schulung.basic.callsstack;
+package ch.finnova.java.schulung.basic.callstack;
 
