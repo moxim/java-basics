@@ -1,4 +1,4 @@
-package ch.finnova.java.schulung.basic.callsstack;
+package ch.finnova.java.schulung.basic.callstack;
 
 public class Base {
     public Base(int parameter) {
