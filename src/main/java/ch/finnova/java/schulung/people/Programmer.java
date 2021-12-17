@@ -1,10 +1,9 @@
 package ch.finnova.java.schulung.people;
 
-public class Programmer extends Person { // is-A
-    private int linesOfCode;             // has-A
+public class Programmer extends Person {
+    private int linesOfCode;
 
-    public int getLinesOfCode() {
+    public int showLinesOfCode() {
         return linesOfCode;
     }
-
 }
