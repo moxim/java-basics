@@ -1,15 +1,14 @@
 package ch.finnova.java.schulung.generics;
 
 import ch.finnova.java.schulung.people.Handwerker;
-import ch.finnova.java.schulung.people.Person;
-import ch.finnova.java.schulung.people.Werkzeug;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class SuperTypTest {
     @Test
-    public void someTest() {
+    void someTest() {
         // given
         SuperTyp<Handwerker> superHandwerker = new SuperTyp<>(new Handwerker());
 
@@ -19,6 +18,6 @@ class SuperTypTest {
         // then
         assertNotNull(superHandwerker, "Einen Superhandwerker zu haben wäre schon nützlich!");
         assertNotNull(hw, "Einen Handwerker zu haben wäre schon nützlich!");
-        assertEquals(hw.showTools().size(), 0, "Ein Superhandwerker braucht keine Werkzeuge!");
+        assertEquals(0, hw.showTools().size(), "Ein Superhandwerker braucht keine Werkzeuge!");
     }
 }
