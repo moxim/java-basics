@@ -1,0 +1,2381 @@
+swagger: '2.0'
+info:
+  description: >
+    This is the specification of the b.Link API.
+    (as implemented by providers (e.g. financial institutions) and used by SIX) 
+
+  version: "1.1.0.11-fi" 
+
+  title: "b.Link API"
+  contact:
+    name: SIX BBS AG
+    url: 'https://www.six-group.com/en/products-services/banking-services/blink.html'
+
+host: api-cert.six-group.com
+
+basePath: /api/bankingservices/corporate/v1 
+
+tags:
+  - name: payments
+    description: |
+      **payment initiation submission**
+      Payment Submission Service - third party payment instruction submission
+  - name: accounts
+    description: |
+      **account information**
+      Account Information Service - third party access to bank account data
+  - name: iso20022
+    description: |
+      **iso20022 xml**
+      "SPSSTMT": Transport XML account statements & "SPSPMTS": Transport XML payment initiations
+  - name: consents
+    description: |
+      **consent information**
+      Information about granted consents.
+  - name: oauth
+    description: |
+      **oauth**
+      OAuth endpoint
+  - name: diagnostics
+    description: |
+      **diagnostics**
+      Diagnostics endpoint
+schemes:
+  - https
+
+paths:
+  '/payments':
+    post:
+      tags:
+        - payments
+      summary: Submit payment instructions
+      operationId: submitPaymentInstructions
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+        - in: body
+          name: body
+          description: |
+            Payment instruction details as defined by data model.
+          required: true
+          schema:
+            $ref: '#/definitions/paymentSubmissionRequest'
+      responses:
+        '201':
+          description: Created.
+          headers:
+            Location:
+              type: string
+              description: Location of the submitted payment submission message. Add /status for the status report.
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/payments/{submissionId}':
+    get:
+      tags:
+        - payments
+      summary: Retrieve a payment submission
+      operationId: retrievePaymentSubmission
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/path_submissionId'
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: The original payment submission
+          schema:
+            $ref: '#/definitions/paymentSubmissionRequest'
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/payments/{submissionId}/status':
+    get:
+      tags:
+        - payments
+      summary: Retrieve payment submission status information
+      operationId: retrievePaymentSubmissionStatus
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/path_submissionId'
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: Status information for the payment submission
+          schema:
+            $ref: '#/definitions/paymentSubmissionStatus'
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/accounts':
+    get:
+      tags:
+        - accounts
+      summary: >-
+        Retrieve list of authorized accounts
+      operationId: requestAccountList
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+      responses:
+        '200':
+          description: Returns a list of authorized accounts.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/accountItem'
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/accounts/{accountId}':
+    get:
+      tags:
+        - accounts
+      summary: Retrieve information about a single specific account
+      operationId: requestAccountDetails
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/path_accountId'
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: Returns the details of an account.
+          schema:
+            $ref: '#/definitions/accountItem'
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/accounts/{accountId}/balance':
+    get:
+      tags:
+        - accounts
+      summary: Retrieve account balance information
+      operationId: requestAccountBalance
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/path_accountId'
+        - $ref: '#/parameters/query_date'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      description: >-
+        Retrieve account balance information.
+
+        * Returns the intraday booked balance (ITBD), if called without a date.
+
+        * Returns the closing booked balance (CLBD), if called for a past date. In case the specified day has not yet been finalized, the response will be a 404 error.
+
+      responses:
+        '200':
+          description: Returns account balance information.
+          schema:
+            $ref: '#/definitions/accountBalanceItem'
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/accounts/{accountId}/transactions':
+    get:
+      tags:
+        - accounts
+      summary: Retrieve transactions of a specific account
+      operationId: requestAccountTransactions
+      description: >2
+        * Returns the transaction list of the current day, if called without a date.
+
+        * Returns the transaction list for a specific day, if called for a past date. In case the specified day has not yet been finalized, the response will be a 404 error.
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/path_accountId'
+        - $ref: '#/parameters/query_date'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: Returns transactions of an account.
+          schema:
+            $ref: '#/definitions/accountTransactionReport'
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/iso20022/payments':
+    post:
+      tags:
+        - iso20022
+      summary: Submit an ISO20022 XML payment instruction (PAIN.001)
+      description: |
+        Submit an ISO20022 XML PAIN.001 payment instruction.
+        The submitted payment instruction must conform to the XML Schema and Implementation Guidelines defined by Swiss Payment Standards;
+        see: https://www.six-interbank-clearing.com/en/home/standardization/iso-payments/customer-bank/implementation-guidelines.html
+      operationId: submitIso20022PaymentInstruction
+      consumes:
+        - application/xml
+      parameters:
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+        - in: body
+          name: body
+          description: |
+            Payment instruction details as defined by data model.
+          required: true
+          # TKF6S: Use string here until a real schema is defined. Otherwise code generation will fail
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Created.
+          headers:
+            Location:
+              type: string
+              description: Location of the submitted ISO20022 XML PAIN.001 message. Add /status for the PAIN.002 status report.
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '202':
+          description: Accepted but the resource is not yet created.
+          headers:
+            Location:
+              type: string
+              description: Location of the submitted ISO20022 XML PAIN.001 message. Add /status for the PAIN.002 status report.
+            ExpectedDurationInSeconds:
+              type: string
+              description: Indicates by when Retrieve ISO20022 XML status report (PAIN.002) can be called to fetch the related PAIN.002.
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/iso20022/payments/{submissionId}':
+    get:
+      tags:
+        - iso20022
+      summary: Retrieve the submitted ISO20022 XML PAIN.001 message.
+      operationId: retrieveIso20022PaymentInstruction
+      produces:
+        - application/xml
+      parameters:
+        - $ref: '#/parameters/path_submissionId'
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: Returns the submitted ISO20022 XML PAIN.001 message
+          schema:
+            type: file
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/iso20022/payments/{submissionId}/status':
+    get:
+      tags:
+        - iso20022
+      summary: Retrieve ISO20022 XML status report (PAIN.002) of a payment instruction
+      description: |
+        Retrieve the XML ISO20022 pain.002 status report.
+        The returned status report must conform to the XML Schema and Implementation Guidelines defined by Swiss Payment Standards;
+        see: https://www.six-interbank-clearing.com/en/home/standardization/iso-payments/customer-bank/implementation-guidelines.html
+      operationId: retrieveIso20022PaymentInstructionStatusReport
+      produces:
+        - application/xml
+      parameters:
+        - $ref: '#/parameters/path_submissionId'
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: Returns the ISO20022 XML PAIN.002 status report of a payment instruction
+          schema:
+            type: file
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/iso20022/statements':
+    get:
+      tags:
+        - iso20022
+      summary: Retrieve a list of resource links to account statements (CAMT.053)
+      description: |
+        Retrieve resources links to available account statements.
+        The returned account statements must conform to the XML Schema and Implementation Guidelines defined by Swiss Payment Standards;
+        see: https://www.six-interbank-clearing.com/en/home/standardization/iso-payments/customer-bank/implementation-guidelines.html
+      operationId: retrieveIso20022AccountStatementIds
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: Returns a collection of references to account statements
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/iso20022ReportReference'
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+
+  '/iso20022/statements/{reportId}':
+    get:
+      tags:
+        - iso20022
+      summary: Retrieves the designated ISO20022 XML CAMT document.
+      operationId: retrieveIso20022AccountStatement
+      produces:
+        - application/xml
+      parameters:
+        - $ref: '#/parameters/path_reportId'
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: Returns the selected ISO20022 XML CAMT document.
+          schema:
+            type: file
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/consents':
+    get:
+      tags:
+        - consents
+      summary: Retrieve a list of consents
+      description: |
+        The consents endpoint allows the client (e.g., a third party provider) to query the consents for a given corporate user. The provider (e.g., a financial institution) must return the consents linked with the access token supplied with the request.
+      operationId: retrieveConsents
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/authorization_in_header'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: List of consents
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/consentItem'
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+
+  '/oauth/token':
+    post:
+      tags:
+        - oauth
+      summary: Get the OAuth access and refresh token
+      description: |
+        Returns the OAuth access and refresh token for the specified client and target.
+        Providers can deploy this endpoint under a separate base path (e.g., without a version number). SIX forwards the requests accordingly.
+      operationId: oauthToken
+      produces:
+        - application/json
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: grant_type
+          in: formData
+          type: string
+          enum:
+            - authorization_code
+            - refresh_token
+          required: true
+          description: 'either authorization_code or refresh_token'
+        - name: code
+          in: formData
+          type: string
+          description: 'authorization code if applicable'
+        - name: refresh_token
+          in: formData
+          type: string
+          description: 'refresh token if applicable'
+        - name: redirect_uri
+          in: formData
+          type: string
+          description: 'original redirect uri if applicable'
+        - name: client_id
+          in: formData
+          type: string
+          required: true
+          description: 'client id'
+        - $ref: '#/parameters/clientid_in_header' 
+        - $ref: '#/parameters/correlation_in_header'
+        - $ref: '#/parameters/agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header' 
+        - $ref: '#/parameters/optional_psu_ip_in_header' 
+        - $ref: '#/parameters/optional_psu_user_agent_in_header' 
+
+      responses:
+        '200':
+          description: 'OAuth token response'
+          schema:
+            $ref: '#/definitions/oauthTokenResponse'
+          headers:
+            X-Correlation-ID:
+              type: string
+              description: Reflects the ID (set by the caller) from the request.
+            Cache-Control:
+              type: string
+              description: 'must be: no-store'
+              default: 'no-store'
+            Pragma:
+              type: string
+              description: 'must be: no-cache'
+              default: 'no-cache'
+        '400':
+          $ref: '#/responses/standard400'
+        '401':
+          $ref: '#/responses/standard401'
+        '403':
+          $ref: '#/responses/standard403'
+        '404':
+          $ref: '#/responses/standard404'
+        '405':
+          $ref: '#/responses/standard405'
+        '500':
+          $ref: '#/responses/standard500'
+        '501':
+          $ref: '#/responses/standard501'
+
+  '/healthcheck':
+    get:
+      tags:
+        - diagnostics
+      summary: Returns all specified request headers and additional diagnostic information
+      operationId: healthCheckGet
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/optional_authorization_in_header'
+        - $ref: '#/parameters/optional_agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header'
+        - $ref: '#/parameters/optional_clientid_in_header'
+        - $ref: '#/parameters/optional_correlation_in_header'
+        - $ref: '#/parameters/optional_psu_ip_in_header'
+        - $ref: '#/parameters/optional_psu_user_agent_in_header'
+      responses:
+        '200':
+          description: 'Health Check Response'
+          schema:
+            $ref: '#/definitions/healthCheckResponse'
+    post:
+      tags:
+        - diagnostics
+      summary: Returns all specified request headers, the request body and additional diagnostic information
+      operationId: healthCheckPost
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/optional_authorization_in_header'
+        - $ref: '#/parameters/optional_agent_in_header'
+        - $ref: '#/parameters/optional_targetid_in_header'
+        - $ref: '#/parameters/optional_clientid_in_header'
+        - $ref: '#/parameters/optional_correlation_in_header'
+        - $ref: '#/parameters/optional_psu_ip_in_header'
+        - $ref: '#/parameters/optional_psu_user_agent_in_header'
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Health Check Response'
+          schema:
+            $ref: '#/definitions/healthCheckResponse'
+
+parameters:
+  path_submissionId:
+    name: submissionId
+    in: path
+    type: string
+    description: id of payment submission
+    required: true
+    maxLength: 35
+  path_reportId:
+    name: reportId
+    in: path
+    type: string
+    description: id of report
+    required: true
+    maxLength: 35
+  path_accountId:
+    name: accountId
+    in: path
+    type: string
+    pattern: "[A-Za-z0-9](([A-Za-z0-9._]|-){0,254}[A-Za-z0-9]){0,1}"
+    description: id of account
+    required: true
+    maxLength: 256
+  query_date:
+    name: date
+    in: query
+    type: string
+    format: date
+    description: 'The date to query, formatted as yyyy-mm-dd. Default value: current date'
+  query_participant_status:
+    name: status
+    in: query
+    type: string
+    enum:
+      - ACTIVE
+      - INACTIVE
+      - SUSPENDED
+      - ONBOARDING
+    default: 'ACTIVE'
+    required: false
+    description: 'status=ACTIVE returns only active clients'
+  query_embed_asset_type:
+    name: embed_assets
+    in: query
+    type: string
+    enum:
+      - LOGO
+      - ALL
+      - NONE
+    default: 'LOGO'
+    required: false
+    description: |
+      ALL  = Embed all assets as base64
+      LOGO = Embed all logos as base64
+      NONE = No emedded assets
+  targetid_in_header:
+    in: header
+    name: X-CorAPI-Target-ID
+    type: string
+    description: 'ID that identifies the provider (e.g., a financial institution). (SCOPE: SIX required)'
+    required: true
+  clientid_in_header:
+    in: header
+    name: X-CorAPI-Client-ID
+    type: string
+    description: 'ID of the client forwarded to the provider. (SCOPE: FI)'
+    required: true
+
+  authorization_in_header:
+    in: header
+    name: Authorization
+    type: string
+    description: Bearer followed by a base64 encoded OAuth access token
+    required: true
+
+  correlation_in_header:
+    in: header
+    name: X-Correlation-ID
+    type: string
+    description: Unique ID (defined by the caller) which will be reflected back in the response.
+    required: true
+  agent_in_header:
+    in: header
+    name: User-Agent
+    type: string
+    description: Name and version of the of the Client software
+    required: true
+  psu_ip_in_header:
+    in: header
+    name: X-PSU-IP-Address
+    type: string
+    description: 'IP address of the user initiating the operation or AUTO for system triggered processes (SCOPE: SIX required)'
+    required: true
+  psu_user_agent_in_header:
+    in: header
+    name: X-PSU-User-Agent
+    type: string
+    description: 'User agent of the user initiating the operation or AUTO for system triggered processes (SCOPE: SIX required)'
+    required: true
+
+  optional_targetid_in_header:
+    in: header
+    name: X-CorAPI-Target-ID
+    type: string
+    description: 'ID of the target, e.g., a financial institution. (SCOPE: FI - optional)'
+    required: false
+
+  optional_authorization_in_header:
+    in: header
+    name: Authorization
+    type: string
+    description: Bearer followed by a base64 encoded OAuth access token
+    required: false
+
+  optional_clientid_in_header:
+    in: header
+    name: X-CorAPI-Client-ID
+    type: string
+    description: 'ID of the client forwarded to the provider. (SCOPE: FI - optional)'
+    required: false
+
+  optional_correlation_in_header:
+    in: header
+    name: X-Correlation-ID
+    type: string
+    description: Unique ID (defined by the caller) which will be reflected back in the response.
+    required: false
+  optional_agent_in_header:
+    in: header
+    name: User-Agent
+    type: string
+    description: Name and version of the of the client software
+    required: false
+  optional_psu_ip_in_header:
+    in: header
+    name: X-PSU-IP-Address
+    type: string
+    description: 'IP address of the user initiating the operation (SCOPE: FI - optional)'
+    required: false
+  optional_psu_user_agent_in_header:
+    in: header
+    name: X-PSU-User-Agent
+    type: string
+    description: 'User of the client software (SCOPE: FI - optional)'
+    required: false
+
+definitions:
+
+  paymentSubmissionRequest:
+    title: Payment Submission Request
+    type: object
+    required:
+      - messageId
+      - initiatingPartyId
+      - debtorAccount
+      - bookingInstruction
+      - transactions
+      - requestedExecutionDate
+    properties:
+      messageId:
+        type: string
+        maxLength: 35
+        example: "eb6305c91f7f49deaed016487c27b42d"
+      initiatingPartyId:
+        type: string
+        maxLength: 32
+        example: "TPP01746"
+      requestedExecutionDate:
+        type: string
+        format: date
+        example: "2018-04-07"
+      debtorAccount:
+        $ref: '#/definitions/paymentIbanAccount'
+      bookingInstruction:
+        $ref: '#/definitions/paymentBookingInstruction'
+      transactions:
+        type: array
+        items:
+          $ref: '#/definitions/paymentInstructionItem'
+
+  paymentInstructionItem:
+    title: Payment Instruction Item
+    type: object
+    required:
+      - instructionId
+      - endToEndId
+      - instructedAmount
+    properties:
+      instructionId:
+        type: string
+        maxLength: 35
+        example: "INSTR-001"
+      endToEndId:
+        type: string
+        maxLength: 35
+        example: "ENDTOENDID-001"
+      instructedAmount:
+        $ref: '#/definitions/paymentCurrencyAmount'
+      ibanDetails:
+        $ref: '#/definitions/paymentIBANDetail'
+      isrDetails:
+        $ref: '#/definitions/paymentISRDetail'
+      otherDetails:
+        $ref: '#/definitions/paymentOtherDetail'
+      qrDetails:
+        $ref: '#/definitions/paymentQRDetail'
+
+  paymentIBANDetail:
+    title: Payment IBAN Detail
+    type: object
+    required:
+      - creditorAccount
+      - creditor
+    properties:
+      sepaIndicator:
+        type: boolean
+        example: true
+      creditorAccount:
+        $ref: '#/definitions/paymentIbanAccount'
+      creditorAgent:
+        $ref: '#/definitions/paymentCreditorAgent'
+      creditor:
+        $ref: '#/definitions/paymentCreditor'
+      chargeBearer:
+        $ref: '#/definitions/paymentChargeBearerMethod'
+      remittanceReference:
+        $ref: '#/definitions/paymentIbanRemittanceReference'
+      remittanceInformation:
+        $ref: '#/definitions/paymentRemittanceInformation'
+
+  paymentISRDetail:
+    title: Payment ISR Detail
+    type: object
+    required:
+      - remittanceReference
+    properties:
+      creditorAccount:
+        $ref: '#/definitions/paymentOtherAccount'
+      creditor:
+        $ref: '#/definitions/paymentCreditor'
+      remittanceReference:
+        $ref: '#/definitions/paymentIsrRemittanceReference'
+
+  paymentOtherDetail:
+    title: Payment Other Detail
+    type: object
+    required:
+      - creditorAccount
+      - creditor
+    properties:
+      creditorAccount:
+        $ref: '#/definitions/paymentOtherAccount'
+      creditorAgent:
+        $ref: '#/definitions/paymentCreditorAgent'
+      creditor:
+        $ref: '#/definitions/paymentCreditor'
+      chargeBearer:
+        $ref: '#/definitions/paymentChargeBearerMethod'
+      remittanceReference:
+        $ref: '#/definitions/paymentOtherRemittanceReference'
+      remittanceInformation:
+        $ref: '#/definitions/paymentRemittanceInformation'
+
+  paymentQRDetail:
+    title: Payment QR Detail
+    type: object
+    required:
+      - creditor
+      - creditorAccount
+    properties:
+      creditorAccount:
+        $ref: '#/definitions/paymentQrIbanAccount'
+      creditor:
+        $ref: '#/definitions/paymentCreditor'
+      ultimateCreditor:
+        $ref: '#/definitions/paymentCreditor'
+      ultimateDebtor:
+        $ref: '#/definitions/paymentDebtor'
+      remittanceReference:
+        $ref: '#/definitions/paymentIbanRemittanceReference'
+      remittanceInformation:
+        $ref: '#/definitions/paymentRemittanceInformation'
+
+  paymentCreditor:
+    title: Payment Creditor
+    type: object
+    required:
+      - name
+      - postalAddress
+    properties:
+      name:
+        type: string
+        maxLength: 140
+      postalAddress:
+        $ref: '#/definitions/paymentStructuredOrUnstructuredAddress'
+
+  paymentDebtor:
+    title: Payment Debtor
+    type: object
+    required:
+      - name
+      - postalAddress
+    properties:
+      name:
+        type: string
+      postalAddress:
+        $ref: '#/definitions/paymentStructuredOrUnstructuredAddress'
+
+  paymentChargeBearerMethod:
+    title: Payment Charge Bearer Method
+    type: string
+    enum:
+      - "DEBT"
+      - "CRED"
+      - "SHAR"
+      - "SLEV"
+    example: "SHAR"
+
+  paymentBookingInstruction:
+    title: Payment Booking Instruction
+    type: string
+    enum:
+      - "SINGLEBOOKING_SIA"
+      - "SINGLEBOOKING_NOA"
+      - "BATCHBOOKING_SALA_NOA"
+      - "BATCHBOOKING_SALA_CND"
+      - "BATCHBOOKING_NOA"
+      - "BATCHBOOKING_CND"
+      - "BATCHBOOKING_CWD"
+    example: "BATCHBOOKING_SALA_CND"
+
+  paymentSubmissionStatus:
+    title: Payment Submission Status
+    type: object
+    required:
+      - statusCode
+    properties:
+      messageId:
+        type: string
+        example: "eb6305c91f7f49deaed016487c27b42d"
+      statusCode:
+        type: string
+        enum:
+          - ACCP
+          - RJCT
+          - PART
+        example: "PART"
+      transactions:
+        type: array
+        items:
+          $ref: '#/definitions/paymentInstructionItemStatus'
+
+  paymentInstructionItemStatus:
+    title: Payment Instruction Item Status
+    type: object
+    required:
+      - instructionId
+      - statusCode
+    properties:
+      instructionId:
+        type: string
+        maxLength: 35
+        example: "DNCS-20180322-IXN0-TXN0"
+      statusCode:
+        type: string
+        enum:
+          - ACCP
+          - RJCT
+        example: "RJCT"
+      reasonCode:
+        type: string
+        example: "CURR"
+      reasonInformation:
+        type: string
+        maxLength: 105
+        example: "currency USD not allowed for payment type ISR"
+
+  paymentCreditorAgent:
+    type: object
+    properties:
+      bic:
+        type: string
+        maxLength: 11
+        example: "BDEMMXMM"
+      clearingSystemMemberIdentification:
+        $ref: '#/definitions/commonClearingSystemMemberIdentification'
+
+  paymentIbanAccount:
+    title: Payment IBAN Account
+    type: object
+    required:
+      - type
+      - identification
+    properties:
+      type:
+        type: string
+        description: The allowed account identification type for the creditor account depends on the payment type. The debtor account must always be an IBAN.
+        enum:
+          - "IBAN"
+      identification:
+        type: string
+        maxLength: 34
+        pattern: "[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"
+        example: "CH9300762011623852957"
+
+  paymentQrIbanAccount:
+    title: Payment QR-IBAN Account
+    type: object
+    required:
+      - type
+      - identification
+    properties:
+      type:
+        type: string
+        description: IBAN or QR-IBAN of the creditor, only IBANs with CH or LI country code permitted.
+        enum:
+          - "IBAN"
+          - "QR_IBAN"
+      identification:
+        type: string
+        maxLength: 34
+        example: "CH9300762011623852957"
+        pattern: "[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"
+
+  paymentOtherAccount:
+    title: Payment Other Account
+    type: object
+    required:
+      - type
+      - identification
+    properties:
+      "type":
+        type: string
+        description: The allowed account identification type for the creditor account depends on the payment type. The debtor account must always be an IBAN.
+        enum:
+          - "OTHER"
+      identification:
+        type: string
+        maxLength: 34
+        example: "01-39139-1"
+
+  balanceCurrencyAmount:
+    title: Balance Currency-Amount
+    type: object
+    required:
+      - currency
+      - amount
+    properties:
+      currency:
+        type: string
+        minLength: 3
+        maxLength: 3
+        example: "CHF"
+      amount:
+        type: string
+        pattern: "-?[0-9]{1,12}([.][0-9]{1,5})?"
+        maxLength: 18
+        example: "10.25"
+
+  paymentCurrencyAmount:
+    title: Payment Currency-Amount
+    type: object
+    required:
+      - currency
+      - amount
+    properties:
+      currency:
+        type: string
+        maxLength: 3
+        minLength: 3
+        example: "CHF"
+      amount:
+        type: string
+        pattern: "[0-9]{1,12}([.][0-9]{1,5})?"
+        maxLength: 18
+        example: "10.25"
+
+  paymentIbanRemittanceReference:
+    title: Payment Remittance Reference
+    description: either remittanceReference or remittanceInformation must be set
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - SCOR
+          - QRR
+      reference:
+        type: string
+        maxLength: 35
+        example: "210000000003139471430009017"
+
+  paymentIsrRemittanceReference:
+    title: Payment Remittance Reference
+    description: either remittanceReference or remittanceInformation must be set
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - ISR
+      reference:
+        type: string
+        maxLength: 35
+        example: "210000000003139471430009017"
+
+  paymentOtherRemittanceReference:
+    title: Payment Remittance Reference
+    description: either remittanceReference or remittanceInformation must be set
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - SCOR
+      reference:
+        type: string
+        maxLength: 35
+        example: "210000000003139471430009017"
+
+  paymentRemittanceInformation:
+    title: Payment Remittance Information
+    description: either remittanceReference or remittanceInformation must be set
+    type: string
+    maxLength: 140
+    example: "Rechnung Nr. 408"
+
+  paymentStructuredAddress:
+    title: Structured Address for Payments
+    type: object
+    required:
+      - streetName
+      - postCode
+      - townName
+      - country
+    properties:
+      streetName:
+        type: string
+        maxLength: 70
+        example: "Rue de la gare"
+      buildingNumber:
+        type: string
+        maxLength: 16
+        example: "24"
+      postCode:
+        type: string
+        maxLength: 16
+        example: "2501"
+      townName:
+        type: string
+        maxLength: 35
+        example: "Biel"
+      country:
+        type: string
+        maxLength: 2
+        example: "CH"
+
+  paymentUnstructuredAddress:
+    title: Unstructured Address for Payments
+    type: object
+    required:
+      - addressLines
+      - country
+    properties:
+      addressLines:
+        type: array
+        description: max 2 lines of 70 characters
+        maxItems: 2
+        example: [ "Robert Schneider SA", "Rue de la gare 24" ]
+        items:
+          type: string
+          maxLength: 70
+      country:
+        type: string
+        maxLength: 2
+        example: "CH"
+
+  paymentStructuredOrUnstructuredAddress:
+    title: Payment Structured or Unstructured Address
+    description: Either structured or unstructered must be set
+    type: object
+    properties:
+      structured:
+        $ref: '#/definitions/paymentStructuredAddress'
+      unstructured:
+        $ref: '#/definitions/paymentUnstructuredAddress'
+
+  # /accounts
+  accountItem:
+    title: Account Information Item
+    type: object
+    required:
+      - id
+      - account
+      - currency
+    properties:
+      id:
+        $ref: '#/definitions/commonAccountId'
+      account:
+        $ref: '#/definitions/paymentIbanAccount'
+      currency:
+        type: string
+        minLength: 3
+        maxLength: 3
+        example: "CHF"
+      designation:
+        type: string
+        maxLength: 140
+        example: "Firmenkonto"
+      _links:
+        type: object
+        description: Contains the paths to additional resources for specific account (e.g. path to transactions resource)
+        properties:
+          self:
+            type: string
+            example: '/accounts/550e8400-e29b-11d4-a716-446655440000'
+          balance:
+            type: string
+            example: '/accounts/550e8400-e29b-11d4-a716-446655440000/balance'
+          transactions:
+            type: string
+            example: '/accounts/550e8400-e29b-11d4-a716-446655440000/transactions'
+
+  accountBalanceItem:
+    title: Account Balance Item
+    type: object
+    required:
+      - date
+      - balanceType
+      - balance
+    properties:
+      date:
+        type: string
+        format: 'date'
+        example: '2010-02-15'
+      balanceType:
+        type: string
+        enum:
+          - "ITBD"
+          - "CLBD"
+        example: "CLBD"
+      balance:
+        $ref: '#/definitions/balanceCurrencyAmount'
+      _links:
+        type: object
+        description: contains the paths to additional resources for specific account (e.g. path to transactions resource)
+        properties:
+          self:
+            type: string
+            example: '/accounts/550e8400-e29b-11d4-a716-446655440000/balance'
+          account:
+            type: string
+            example: '/accounts/550e8400-e29b-11d4-a716-446655440000'
+          transactions:
+            type: string
+            example: '/accounts/550e8400-e29b-11d4-a716-446655440000/transactions'
+
+  accountTransactionReport:
+    title: Account Transaction Report
+    type: object
+    required:
+      - iban
+      - entries
+    properties:
+      iban:
+        type: string
+        maxLength: 34
+        pattern: "[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"
+        example: "CH5481230000001998736"
+      designation:
+        type: string
+        maxLength: 140
+        example: "Checking Account"
+      entries:
+        type: array
+        items:
+          $ref: '#/definitions/accountTransactionEntry'
+      _links:
+        type: object
+        properties:
+          self:
+            type: string
+            example: "/accounts/550e8400e29b11d4a716446655440000/statements"
+          account:
+            type: string
+            example: "/accounts/550e8400e29b11d4a716446655440000"
+          balance:
+            type: string
+            example: "/accounts/550e8400e29b11d4a716446655440000/balance"
+
+  accountTransactionEntry:
+    title: Account Transaction Entry
+    type: object
+    required:
+      - entryId
+      - transactionType
+      - bookingDate
+      - valueDate
+      - amount
+      - bankTransactionCode
+    properties:
+      entryId:
+        type: string
+        example: "ENTRY123456789"
+      transactionType:
+        $ref: '#/definitions/accountTransactionTransactionType'
+      entryReference:
+        type: string
+        example: 010001628
+        maxLength: 35
+      entryReferenceInternalId:
+        type: string
+        maxLength: 35
+        example: "010001628"
+      reversalIndicator:
+        type: boolean
+      bookingDate:
+        type: string
+        format: date
+        example: "2018-10-29"
+      valueDate:
+        type: string
+        format: date
+        example: "2018-10-29"
+      amount:
+        $ref: '#/definitions/paymentCurrencyAmount'
+      instructedAmount:
+        $ref: '#/definitions/accountTransactionInstructedAmount'
+      totalChargesAmount:
+        $ref: '#/definitions/accountTransactionItemCharges'
+      bankTransactionCode:
+        $ref: '#/definitions/accountTransactionBankTransactionCode'
+      additionalEntryInformation:
+        type: string
+      transactions:
+        type: array
+        items:
+          $ref: '#/definitions/accountTransactionItem'
+
+  accountTransactionItem:
+    title: Account Transaction Item
+    type: object
+    required:
+      - transactionId
+      - transactionType
+      - amount
+    properties:
+      transactionId:
+        type: string
+        maxLength: 35
+        example: 'TX12345A987'
+      transactionType:
+        $ref: '#/definitions/accountTransactionTransactionType'
+      endToEndId:
+        type: string
+        maxLength: 35
+        example: "ENDTOENDID-01"
+      bankTransactionCode:
+        $ref: '#/definitions/accountTransactionBankTransactionCode'
+      amount:
+        $ref: '#/definitions/paymentCurrencyAmount'
+      instructedAmount:
+        $ref: '#/definitions/accountTransactionInstructedAmount'
+      totalChargesAmount:
+        $ref: '#/definitions/accountTransactionItemCharges'
+      counterparty:
+        $ref: '#/definitions/accountTransactionCounterparty'
+      remittanceInformation:
+        $ref: '#/definitions/paymentRemittanceInformation'
+      remittanceReference:
+        $ref: '#/definitions/accountTransactionRemittanceReference'
+      additionalTransactionInformation:
+        type: string
+        maxLength: 140
+
+  accountTransactionItemCharges:
+    title: Account Transaction Item Charges
+    type: object
+    required:
+      - amount
+      - currency
+    properties:
+      amount:
+        type: string
+        pattern: "[0-9]{1,12}([.][0-9]{1,5})?"
+        maxLength: 18
+        example: "10.25"
+      currency:
+        type: string
+        maxLength: 3
+        minLength: 3
+        example: "CHF"
+      chargeRecords:
+        type: array
+        items:
+          $ref: '#/definitions/accountTransactionItemChargesRecord'
+
+  accountTransactionItemChargesRecord:
+    title: Account Transaction Item Charges Record
+    type: object
+    properties:
+      amount:
+        type: string
+        pattern: "[0-9]{1,12}([.][0-9]{1,5})?"
+        maxLength: 18
+        example: "10.25"
+      currency:
+        type: string
+        minLength: 3
+        maxLength: 3
+        example: "CHF"
+      type:
+        type: string
+        maxLength: 35
+        example: "Some type of charge"
+      chargesIncludedIndicator:
+        type: boolean
+
+  accountTransactionCounterparty:
+    title: Account Transaction Counterparty
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 140
+        example: "Hans Muster"
+      postalAddress:
+        $ref: '#/definitions/accountTransactionStructuredOrUnstructuredAddress'
+      account:
+        $ref: '#/definitions/accountTransactionCounterpartyAccount'
+      agent:
+        $ref: '#/definitions/accountTransactionCounterpartyAgent'
+
+  accountTransactionCounterpartyAgent:
+    title: Account Transaction Counterparty Agent
+    type: object
+    properties:
+      bic:
+        type: string
+        maxLength: 11
+      clearingSystemMemberIdentification:
+        $ref: '#/definitions/commonClearingSystemMemberIdentification'
+
+  accountTransactionInstructedAmount:
+    title: Account Transaction Instructed Amount
+    type: object
+    required:
+      - amount
+      - sourceCurrency
+      - targetCurrency
+    properties:
+      amount:
+        type: string
+        pattern: "[0-9]{1,12}([.][0-9]{1,5})?"
+        maxLength: 18
+        example: "10.25"
+      sourceCurrency:
+        type: string
+        minLength: 3
+        maxLength: 3
+        example: "CHF"
+      targetCurrency:
+        type: string
+        minLength: 3
+        maxLength: 3
+        example: "USD"
+      exchangeRate:
+        type: string
+        example: "0.957"
+        pattern: "[0-9][.][0-9]{1,10}"
+        maxLength: 12
+      exchangeIndicator:
+        type: string
+        maxLength: 4
+        example: "MULT"
+
+  accountTransactionBankTransactionCode:
+    title: Account Transaction Bank Transaction Code
+    type: object
+    required:
+      - domainCode
+      - familyCode
+      - subFamilyCode
+    properties:
+      domainCode:
+        type: string
+        maxLength: 4
+        example: "PMNT"
+      familyCode:
+        type: string
+        maxLength: 4
+        example: "RCDT"
+      subFamilyCode:
+        type: string
+        maxLength: 4
+        example: "DMCT"
+
+  accountTransactionTransactionType:
+    title: Account Transaction Transaction Type
+    type: string
+    enum:
+      - CRDT
+      - DBIT
+    example: "CRDT"
+
+  accountTransactionCounterpartyAccount:
+    title: Account Transaction Counterparty Account
+    type: object
+    required:
+      - type
+      - identification
+    properties:
+      type:
+        type: string
+        enum:
+          - "IBAN"
+          - "OTHER"
+      identification:
+        type: string
+        maxLength: 35
+        example: "CH9300762011623852957"
+
+  accountTransactionRemittanceReference:
+    title: Account Transaction Remittance Reference
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - SCOR
+          - ISR
+          - QRR
+      reference:
+        type: string
+        maxLength: 35
+        example: "210000000003139471430009017"
+
+  accountTransactionStructuredAddress:
+    title: Structured Postal Address for Transactions
+    type: object
+    required:
+      - streetName
+      - postCode
+      - townName
+    properties:
+      streetName:
+        type: string
+        maxLength: 70
+        example: "Rue de la gare"
+      buildingNumber:
+        type: string
+        maxLength: 16
+        example: "24"
+      postCode:
+        type: string
+        maxLength: 16
+        example: "2501"
+      townName:
+        type: string
+        maxLength: 35
+        example: "Biel"
+      country:
+        type: string
+        maxLength: 2
+        example: "CH"
+
+  accountTransactionUnstructuredAddress:
+    title: Unstructured Address for Transactions
+    type: object
+    required:
+      - addressLines
+    properties:
+      addressLines:
+        type: array
+        description: max 4 lines of 70 characters
+        maxItems: 4
+        example: [ "Robert Schneider SA", "Rue de la gare 24" ]
+        items:
+          type: string
+          maxLength: 70
+      country:
+        type: string
+        maxLength: 2
+        example: "CH"
+
+  # /consents
+  consentItem:
+    title: Consent Item
+    type: object
+    properties:
+      useCase:
+        type: string
+        example: "ais"
+      accounts:
+        type: array
+        items:
+          $ref: '#/definitions/consentAccountItem'
+
+  consentAccountItem:
+    title: Consent Account Item
+    type: object
+    required:
+      - accountId
+      - iban
+      - currency
+    properties:
+      accountId:
+        type: string
+        example: "13579"
+      iban:
+        type: string
+        maxLength: 34
+        pattern: "[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"
+        example: "CH9300762011623852957"
+      currency:
+        type: string
+        minLength: 3
+        maxLength: 3
+        example: "CHF"
+      accountOwner:
+        type: string
+        maxLength: 70
+        example: "Account Owner XYZ"
+      designation:
+        type: string
+        example: "Savings ABC"
+      allowedCurrencies:
+        type: array
+        items:
+          type: string
+          example: "CHF"
+
+  # /directory
+  directoryClientItem:
+    title: Directory Client Item
+    allOf:
+      - $ref: '#/definitions/directoryParticipantItem'
+      - type: object
+        properties:
+          clientId:
+            type: string
+            example: '1234'
+          clientConsentBackendUrl:
+            type: string
+            example: 'https://www.acme.com/consent'
+          clientRedirectionEndpointUrl:
+            type: string
+            example: 'https://www.acme.com/start'
+        required:
+          - clientId
+          - clientConsentBackendUrl
+          - clientRedirectionEndpointUrl
+
+  directoryProviderItem:
+    title: Directory Provider Item
+    allOf:
+      - $ref: '#/definitions/directoryParticipantItem'
+      - type: object
+        properties:
+          providerId:
+            type: string
+            example: '1234'
+          providerAuthEndpointUrl:
+            type: string
+            example: 'https://www.acme.com/oauth/authorize'
+        required:
+          - providerId
+          - providerAuthEndpointUrl
+
+  directoryParticipantItem:
+    title: Directory Participant Item
+    type: object
+    properties:
+      companyName:
+        type: string
+        maxLength: 50
+        example: 'ACME'
+      contact:
+        type: array
+        items:
+          $ref: '#/definitions/directoryContact'
+        example:
+          - type: 'BUSINESS'
+            designation: 'Account and Payments Services'
+            emailAddress: 'business-contact@acme.com'
+          - type: 'TECHNICAL'
+            emailAddress: 'technical-contact@acme.com'
+            phone: '+41 58 999 9999'
+          - type: 'SUPPORT'
+            emailAddress: 'support-contact@acme.com'
+            phone: '+41 58 999 9997'
+      companyLogo:
+        $ref: '#/definitions/directoryMultisizeImageReference'
+      marketingImage:
+        $ref: '#/definitions/directoryImageReference'
+      companyUrl:
+        type: string
+        example: 'https://www.acme.com'
+      marketingDescription:
+        $ref: "#/definitions/directoryMarketingDescription"
+      shortDescription:
+        $ref: '#/definitions/directoryShortDescription'
+      status:
+        $ref: '#/definitions/directoryParticipantStatus'
+      registrationDate:
+        type: string
+        format: date
+        example: '2018-10-11'
+      lastModified:
+        type: string
+        format: date-time
+        example: '2018-11-11T12:39:23+01:00'
+      software:
+        $ref: '#/definitions/directorySoftwareDescription'
+      useCases:
+        type: array
+        items:
+          $ref: '#/definitions/directoryUseCaseItem'
+        minItems: 0
+    required:
+      - companyName
+      - contact
+      - companyLogo
+      - companyUrl
+      - marketingDescription
+      - shortDescription
+      - status
+      - registrationDate
+      - lastModified
+      - software
+
+  directoryContact:
+    title: Directory Contact
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - BUSINESS
+          - TECHNICAL
+          - SUPPORT
+      designation:
+        type: string
+        maxLength: 80
+      emailAddress:
+        type: string
+        format: email
+        maxLength: 50
+      phone:
+        type: string
+        maxLength: 20
+    required:
+      - type
+      - emailAddress
+
+  directorySoftwareDescription:
+    title: Directory Software Description
+    type: object
+    properties:
+      productName:
+        $ref: '#/definitions/directoryProductName'
+      manufacturer:
+        type: string
+        maxLength: 50
+        example: 'ACME Corp.'
+      category:
+        type: array
+        items:
+          type: string
+          enum:
+            - ACCOUNTING
+            - IT
+            - CRM
+        minItems: 1
+        example:
+          - 'ACCOUNTING'
+      productInfoUrl:
+        type: string
+        example: 'https://acme.com/amce_accounting'
+      productLogo:
+        $ref: '#/definitions/directoryMultisizeImageReference'
+      marketingImage:
+        $ref: '#/definitions/directoryImageReference'
+      marketingDescription:
+        $ref: '#/definitions/directoryMarketingDescription'
+      shortDescription:
+        $ref: '#/definitions/directoryShortDescription'
+    required:
+      - productName
+      - manufacturer
+      - category
+      - productInfoUrl
+      - productLogo
+      - marketingDescription
+      - shortDescription
+
+  directoryMarketingDescription:
+    title: Directory Marketing Description
+    type: object
+    properties:
+      de:
+        type: array
+        items:
+          type: string
+          maxLength: 140
+      en:
+        type: array
+        items:
+          type: string
+          maxLength: 140
+      fr:
+        type: array
+        items:
+          type: string
+          maxLength: 140
+      it:
+        type: array
+        items:
+          type: string
+          maxLength: 140
+    example:
+      de: [ 'bullet1', 'bullet2', 'bullet3', 'bullet4', 'bullet5' ]
+      en: [ 'bullet1', 'bullet2', 'bullet3', 'bullet4', 'bullet5' ]
+      fr: [ 'bullet1', 'bullet2', 'bullet3', 'bullet4', 'bullet5' ]
+      it: [ 'bullet1', 'bullet2', 'bullet3', 'bullet4', 'bullet5' ]
+    required:
+      - de
+      - en
+      - fr
+      - it
+
+  directoryShortDescription:
+    title: Directory Short Description
+    type: object
+    properties:
+      de:
+        type: string
+        maxLength: 300
+      en:
+        type: string
+        maxLength: 300
+      fr:
+        type: string
+        maxLength: 300
+      it:
+        type: string
+        maxLength: 300
+    example:
+      de: 'Kurzbeschreibung'
+      en: 'Short description'
+      fr: 'Description rapide'
+      it: 'Corta descrizione'
+    required:
+      - de
+      - en
+      - fr
+      - it
+
+  directoryUseCaseItem:
+    title: Directory Use Case Information
+    type: object
+    properties:
+      name:
+        type: string
+        example: 'ais'
+      version:
+        type: string
+        example: 'v1'
+      status:
+        type: string
+        enum:
+          - ONBOARDING
+          - CERTIFIED
+        example: 'CERTIFIED'
+      from:
+        type: string
+        format: date-time
+        example: '2018-10-10T:14:00:00+02:00'
+      until:
+        type: string
+        format: date-time
+        example: '9999-12-31T23:59:59+01:00'
+      properties:
+        type: object
+        additionalProperties:
+          type: string
+    required:
+      - name
+      - version
+      - status
+      - from
+
+  directoryProductName:
+    title: Directory Product Name
+    type: object
+    properties:
+      de:
+        type: string
+        maxLength: 50
+      en:
+        type: string
+        maxLength: 50
+      fr:
+        type: string
+        maxLength: 50
+      it:
+        type: string
+        maxLength: 50
+    example:
+      de: 'ACME Buchhaltungssoftware'
+      en: 'ACME accounting software'
+      fr: 'ACME software comptable'
+      it: 'ACME software contabilità'
+    required:
+      - de
+      - en
+      - fr
+      - it
+
+  directoryMultisizeImageReference:
+    title: Directory Multisize Image Reference
+    type: object
+    properties:
+      small:
+        $ref: '#/definitions/directoryImageReference'
+      large:
+        $ref: '#/definitions/directoryImageReference'
+    required:
+      - small
+      - large
+
+  directoryParticipantStatus:
+    title: Directory Participant Status
+    type: string
+    enum:
+      - ACTIVE
+      - INACTIVE
+      - SUSPENDED
+      - ONBOARDING
+    example: 'ACTIVE'
+
+  directoryEmbedAssetType:
+    title: Embed Asset Type
+    type: string
+    enum:
+      - ALL
+      - NONE
+      - LOGO
+    example: 'LOGO'
+
+  directoryImageReference:
+    title: Directory Image Reference
+    type: object
+    properties:
+      mimeType:
+        type: string
+        example: 'image/svg+xml'
+      image:
+        type: string
+        format: byte
+        example: 'QUNNRQ=='
+      assetId:
+        type: string
+        format: string
+        example: 'assetId.svg'
+    required:
+      - mimeType
+      - assetId
+
+  iso20022ReportReference:
+    title: ISO 20022 Report Reference
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      type:
+        type: string
+        enum:
+          - CAMT53
+      id:
+        type: string
+
+  oauthTokenResponse:
+    title: oAuth Token Response
+    type: object
+    required:
+      - access_token
+      - token_type
+    properties:
+      access_token:
+        type: string
+      token_type:
+        type: string
+        default: 'bearer'
+      expires_in:
+        type: integer
+        minimum: 1
+      refresh_token:
+        type: string
+
+  commonClearingSystemMemberIdentification:
+    title: Common Clearing System Member Identification
+    type: object
+    required:
+      - code
+      - memberId
+    properties:
+      code:
+        type: string
+        maxLength: 5
+        example: "CHBCC"
+      memberId:
+        type: string
+        maxLength: 35
+        example: "00230"
+
+  accountTransactionStructuredOrUnstructuredAddress:
+    title: Common Structured or Unstructured Address
+    type: object
+    properties:
+      structured:
+        $ref: '#/definitions/accountTransactionStructuredAddress'
+      unstructured:
+        $ref: '#/definitions/accountTransactionUnstructuredAddress'
+
+  commonAccountId:
+    type: string
+    pattern: "[A-Za-z0-9](([A-Za-z0-9._]|-){0,254}[A-Za-z0-9]){0,1}"
+    maxLength: 256
+    example: "abc123_abcxyz.123789.abcxyz.abcxyz_abcxyz_abcxyz_abcxyz_ccccc_123abc"
+
+  commonErrorResponse:
+    title: Common Error Response
+    type: object
+    properties:
+      type:
+        $ref: '#/definitions/commonErrorType'
+      title:
+        type: string
+        example:
+          This is the general problem description
+      detail:
+        type: string
+        example:
+          Detailed problem description with respect to the current request, e.g., invalid account number format
+      instance:
+        type: string
+        example:
+          path/to/corresponding/resource
+
+  commonErrorType:
+    title: Common Error Type
+    description: Error Types for commonErrorResponse. See Appendix for detailed information.
+    type: string
+    enum:
+      - /problems/INVALID_PAYLOAD
+      - /problems/MALFORMED_PAYLOAD
+      - /problems/INVALID_TOKEN
+      - /problems/EXPIRED_TOKEN
+      - /problems/INSUFFICIENT_PRIVILEGES
+      - /problems/NO_ACCESS_TO_RESOURCE
+      - /problems/RESOURCE_DOES_NOT_EXIST
+      - /problems/RESOURCE_NOT_READY
+      - /problems/RESOURCE_TOO_LARGE
+      - /problems/WRONG_METHOD
+      - /problems/OPERATION_NOT_ALLOWED
+      - /problems/TECHNICAL_ERROR
+      - /problems/NOT_IMPLEMENTED
+    example: '/problems/TECHNICAL_ERROR'
+
+  healthCheckResponse:
+    title: Health Check Response
+    type: object
+    properties:
+      requestDateTime:
+        title: Request Time
+        type: string
+        format: 'date-time'
+        example: '2018-04-03T07:30:00+01:00'
+      receivedHeaders:
+        title: 'Received Headers'
+        type: array
+        items:
+          type: object
+          properties:
+            headerName:
+              type: string
+              example: 'X-Correlation-ID'
+            headerValue:
+              type: string
+              description: 'As received'
+      receivedPayload:
+        title: 'Received Payload'
+        type: string
+        example: '... as received ... '
+
+# responses for error messages
+responses:
+  standard400:
+    headers:
+      Content-Type:
+        type: string
+        description: 'application/problem+json; charset=utf-8 according to RFC7807'
+      Content-Language:
+        type: string
+        description: 'always en'
+      X-Correlation-ID:
+        type: string
+        description: Reflected client defined ID from request.
+    description: Bad Request - The format of the request was invalid.
+    schema:
+      $ref: '#/definitions/commonErrorResponse'
+
+  standard401:
+    headers:
+      Content-Type:
+        type: string
+        description: 'application/problem+json; charset=utf-8 according to RFC7807'
+      Content-Language:
+        type: string
+        description: 'always en'
+      X-Correlation-ID:
+        type: string
+        description: Reflected client defined ID from request.
+    description: Unauthorized - Either no token or an invalid (e.g., token expired) token was received.
+    schema:
+      $ref: '#/definitions/commonErrorResponse'
+
+  standard403:
+    headers:
+      Content-Type:
+        type: string
+        description: 'application/problem+json; charset=utf-8 according to RFC7807'
+      Content-Language:
+        type: string
+        description: 'always en'
+      X-Correlation-ID:
+        type: string
+        description: Reflected client defined ID from request.
+    description: Forbidden - A valid OAuth Token was received, but access was denied. (Depending on the security requirements, providers can return 404 instead)
+    schema:
+      $ref: '#/definitions/commonErrorResponse'
+
+  standard404:
+    headers:
+      Content-Type:
+        type: string
+        description: 'application/problem+json; charset=utf-8 according to RFC7807'
+      Content-Language:
+        type: string
+        description: 'always en'
+      X-Correlation-ID:
+        type: string
+        description: Reflected client defined ID from request.
+    description: Not Found - Either the endpoint does not exist or a requested resource is not yet available (e.g., account statements)
+    schema:
+      $ref: '#/definitions/commonErrorResponse'
+
+  standard405:
+    headers:
+      Content-Type:
+        type: string
+        description: 'application/problem+json; charset=utf-8 according to RFC7807'
+      Content-Language:
+        type: string
+        description: 'always en'
+      X-Correlation-ID:
+        type: string
+        description: Reflected client defined ID from request.
+    description: Method Not Allowed
+    schema:
+      $ref: '#/definitions/commonErrorResponse'
+
+  standard500:
+    headers:
+      Content-Type:
+        type: string
+        description: 'application/problem+json; charset=utf-8 according to RFC7807'
+      Content-Language:
+        type: string
+        description: 'always en'
+      X-Correlation-ID:
+        type: string
+        description: Reflected client defined ID from request.
+    description: Internal Server Error
+    schema:
+      $ref: '#/definitions/commonErrorResponse'
+
+  standard501:
+    headers:
+      Content-Type:
+        type: string
+        description: 'application/problem+json; charset=utf-8 according to RFC7807'
+      Content-Language:
+        type: string
+        description: 'always en'
+      X-Correlation-ID:
+        type: string
+        description: Reflected client defined ID from request.
+    description: Not Implemented
+    schema:
+      $ref: '#/definitions/commonErrorResponse'
+
+
+

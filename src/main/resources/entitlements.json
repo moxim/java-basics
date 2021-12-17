@@ -1,0 +1,53 @@
+{
+  "embeddedUsages": [],
+  "identifier": "7d26ab1b-5d95-4cbf-8199-2ada22faa55b",
+  "indexNumber": 0,
+  "moduleUsage": {
+    "changeRequired": false,
+    "contexts": {
+      "textDescriptors": [
+        {
+          "languageCode": "deu"
+        },
+        {
+          "languageCode": "fra"
+        },
+        {
+          "languageCode": "eng"
+        }
+      ]
+    },
+    "defaultValue": false,
+    "identifier": "1565529234185",
+    "indexNumber": 1,
+    "usageDescriptors": {
+      "usageDescriptors": []
+    },
+    "usageName": "CB_DP",
+    "visible": true
+  },
+  "moduleUsageDescriptor": {
+    "identifier": "Data Privacy"
+  },
+  "name": "DataPrivacy",
+  "permissionTexts": {
+    "permissionTexts": [
+      {
+        "languageCode": "fra",
+        "text": "<p>Le mod&uacute;l de DP...&nbsp;</p>\n"
+      },
+      {
+        "languageCode": "eng",
+        "text": "<p>This is the DataPrivacy module.</p>\n"
+      },
+      {
+        "languageCode": "deu",
+        "text": "<p>Dies ist das&nbsp;Daten-Privatsph&auml;ren-Modul.</p>\n"
+      }
+    ]
+  },
+  "subjectToApproval": true,
+  "validFrom": "2019-08-11T13:14:19Z[GMT]",
+  "validTo": "2499-12-31T23:59:59Z[GMT]",
+  "version": "1.0"
+}

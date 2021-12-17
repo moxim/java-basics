@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">
+    <FIToFICstmrCdtTrf>
+        <GrpHdr>
+            <MsgId>DPO-221105-020</MsgId>
+            <CreDtTm>2021-11-10T00:00:00+00:00</CreDtTm>
+            <NbOfTxs>1</NbOfTxs>
+            <SttlmInf>
+                <SttlmMtd>INDA</SttlmMtd>
+            </SttlmInf>
+        </GrpHdr>
+        <CdtTrfTxInf>
+            <PmtId>
+                <InstrId>A2D044506271305</InstrId>
+                <EndToEndId>E2E0404451305</EndToEndId>
+                <UETR>174c245f-2682-4291-ad67-2a41e530cd27</UETR>
+            </PmtId>
+            <IntrBkSttlmAmt Ccy="CHF">15.11</IntrBkSttlmAmt>
+            <IntrBkSttlmDt>2021-11-10</IntrBkSttlmDt>
+            <InstdAmt Ccy="CHF">17.12</InstdAmt>
+            <ChrgBr>SHAR</ChrgBr>
+            <ChrgBr>CRED</ChrgBr>
+            <ChrgsInf>
+                <Amt Ccy="CHF">2.01</Amt>
+                <Agt>
+                    <FinInstnId>
+                        <BICFI>CRESUS33XXX</BICFI>
+                    </FinInstnId>
+                </Agt>
+            </ChrgsInf>
+            <PrvsInstgAgt1>
+                <FinInstnId>
+                    <BICFI>WFBIUS6SXXX</BICFI>
+                </FinInstnId>
+            </PrvsInstgAgt1>
+            <PrvsInstgAgt1Acct>
+                <Id>
+                    <Othr>
+                        <Id>111700066792</Id>
+                    </Othr>
+                </Id>
+            </PrvsInstgAgt1Acct>
+            <PrvsInstgAgt2>
+                <FinInstnId>
+                    <BICFI>CITIUS33XXX</BICFI>
+                </FinInstnId>
+            </PrvsInstgAgt2>
+            <PrvsInstgAgt2Acct>
+                <Id>
+                    <IBAN>GB29NWBK60161331926819</IBAN>
+                </Id>
+            </PrvsInstgAgt2Acct>
+            <PrvsInstgAgt3>
+                <FinInstnId>
+                    <BICFI>BOFAUS3NXXX</BICFI>
+                    <Nm>BANK OF AMERICA, N.A.</Nm>
+                    <PstlAdr>
+                        <AdrLine>22 BROADWAY</AdrLine>
+                        <AdrLine>10038 NEW YORK US</AdrLine>
+                    </PstlAdr>
+                </FinInstnId>
+            </PrvsInstgAgt3>
+            <InstgAgt>
+                <FinInstnId>
+                    <BICFI>UBSWCHZH80A</BICFI>
+                </FinInstnId>
+            </InstgAgt>
+            <InstdAgt>
+                <FinInstnId>
+                    <BICFI>ZKBKCHZZ80A</BICFI>
+                </FinInstnId>
+            </InstdAgt>
+            <Dbtr>
+                <Nm>A21,PLC.</Nm>
+                <PstlAdr>
+                    <StrtNm>1 ANGEL LN</StrtNm>
+                    <PstCd>EC4R 3AB</PstCd>
+                    <TwnNm>LONDON</TwnNm>
+                    <Ctry>GB</Ctry>
+                </PstlAdr>
+            </Dbtr>
+            <DbtrAcct>
+                <Id>
+                    <Othr>
+                        <Id>042100175</Id>
+                    </Othr>
+                </Id>
+            </DbtrAcct>
+            <DbtrAgt>
+                <FinInstnId>
+                    <BICFI>CHASGB2LXXX</BICFI>
+                </FinInstnId>
+            </DbtrAgt>
+            <CdtrAgt>
+                <FinInstnId>
+                    <BICFI>ZKBKCHZZ80A</BICFI>
+                </FinInstnId>
+            </CdtrAgt>
+            <Cdtr>
+                <Nm>Anna Parker</Nm>
+                <PstlAdr>
+                    <StrtNm>Gartenweg</StrtNm>
+                    <PstCd>8965</PstCd>
+                    <TwnNm>Berikon</TwnNm>
+                    <Ctry>CH</Ctry>
+                </PstlAdr>
+            </Cdtr>
+            <CdtrAcct>
+                <Id>
+                    <Othr>
+                        <Id>CH1900700111700066792</Id>
+                    </Othr>
+                </Id>
+            </CdtrAcct>
+            <InstrForNxtAgt>
+                <Cd>PHON</Cd>
+                <InstrInf>blablablabla</InstrInf>
+            </InstrForNxtAgt>
+            <RmtInf>
+                <Ustrd>INVOICE 1234</Ustrd>
+            </RmtInf>
+        </CdtTrfTxInf>
+    </FIToFICstmrCdtTrf>
+</Document>
