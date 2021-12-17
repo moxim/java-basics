@@ -1,11 +1,16 @@
 package ch.finnova.java.schulung.people;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Handwerker extends Person { // is-A
-    private List werkzeuge;              // has-A
+public class Handwerker extends Person {
+    private List<Werkzeug> werkzeuge;
 
-    public List showTools() {
+    public Handwerker() {
+        werkzeuge = new ArrayList<>();
+    }
+
+    public List<Werkzeug> showTools() {
         return werkzeuge;
     }
 }
