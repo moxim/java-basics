@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:element xmlns="http://www.w3.org/1999/XSL/Transform" name="ether">
-        <xs:annotation>
-            <xs:documentation>I cannot use unescaped characters in here, e.g. &lt; </xs:documentation>
-            <xs:documentation><![CDATA[but I can use them in here, e.g. &lt; as well as < ]]></xs:documentation>
-        </xs:annotation>
-    </xs:element>
-</xs:schema>
