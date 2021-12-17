@@ -1,4 +1,4 @@
 package ch.finnova.java.schulung.basic;
 
-public class Emtpty {
+public class Empty {
 }
