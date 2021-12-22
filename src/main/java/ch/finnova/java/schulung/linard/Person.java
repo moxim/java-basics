@@ -1,4 +1,4 @@
-package ch.finnova.java.schulung.people;
+package ch.finnova.java.schulung.linard;
 
 public class Person {
     private static String name;
@@ -24,7 +24,7 @@ public class Person {
         coolThing = null; // this is impossible
     }
 
-     public static void main(String[] args) {
+    public static void main(String[] args) {
         Person adam = new Person();
         adam.setName("Adam");
 
