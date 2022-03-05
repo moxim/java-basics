@@ -12,11 +12,13 @@ class SuperTypTest {
         // given
         SuperTyp<Handwerker> superHandwerker = new SuperTyp<>(new Handwerker());
 
+        superHandwerker.getPersonTyp().sayHello(new Handwerker(), "hi");
         // when
         Handwerker hw = superHandwerker.getPersonTyp();
 
         // then
-        assertNotNull(superHandwerker, "Einen Superhandwerker zu haben wäre schon nützlich!");
+        String message = "Einen Superhandwerker zu haben wäre schon nützlich!";
+        assertNotNull(superHandwerker, message);
         assertNotNull(hw, "Einen Handwerker zu haben wäre schon nützlich!");
         assertEquals(0, hw.showTools().size(), "Ein Superhandwerker braucht keine Werkzeuge!");
     }
