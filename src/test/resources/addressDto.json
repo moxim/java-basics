@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1001,
+    "street": "Merkurstrasse",
+    "number": "6",
+    "city": "Lenzburg",
+    "plz": "4711",
+    "inhabitants": [
+      {
+        "id": 1001,
+        "name": "Hendrik"
+      },
+      {
+        "id": 1002,
+        "name": "Simon"
+      }
+    ]
+  },
+  {
+    "id": 1002,
+    "street": "Tilesford Close",
+    "number": "7",
+    "city": "Shirley",
+    "plz": "B90 4YF"
+  }
+]
+

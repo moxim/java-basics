@@ -1,0 +1,6 @@
+curl -v localhost:8080/addresses
+curl localhost:8080/people
+
+curl -X POST localhost:8080/people -H 'Content-type:application/json' -d '{"name": "Michael", "address": { "street": "Winkelweg", "number": "16b", "city": "Meran", "plz": "39012" }}'
+
+curl -X POST localhost:8080/addresses -H 'Content-type:application/json' -d '{"street": "Tilesford Close", "number": "7", "city": "Shirley", "plz": "B90 4YF"}'
