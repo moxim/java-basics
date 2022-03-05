@@ -2,50 +2,25 @@ package ch.finnova.java.schulung.db.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.*;
-import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
 public class Address {
-    @Id
-    @Column(nullable = false, updatable = false, name = "address_id")
-    @GeneratedValue
     private Long id;
 
     private String street;
 
     private String number;
 
-    @Column(nullable = false)
     private String plz;
 
     private String city;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "address", fetch = FetchType.EAGER)
     private Set<Person> inhabitants = new HashSet<>();
-
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
-
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
 
     public Address() {
         // empty c'tor required by JPA
-    }
-
-    @PrePersist
-    public void prePersist() {
-        dateCreated = OffsetDateTime.now();
-        lastUpdated = dateCreated;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        lastUpdated = OffsetDateTime.now();
     }
 
     public Long getId() {

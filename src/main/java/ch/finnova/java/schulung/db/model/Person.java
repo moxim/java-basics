@@ -2,41 +2,13 @@ package ch.finnova.java.schulung.db.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import javax.persistence.*;
-import java.time.OffsetDateTime;
-
-@Entity
-@Table(name = "People")
 public class Person {
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
-
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
-
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
-
-    @PrePersist
-    public void prePersist() {
-        dateCreated = OffsetDateTime.now();
-        lastUpdated = dateCreated;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        lastUpdated = OffsetDateTime.now();
-    }
 
     public Person() {
         // empty c'tor required by JPA

@@ -1,9 +1,0 @@
-
-insert into postgres.public.address (address_id, plz, city, date_created, last_updated, number, street)
-values (1001, '5600', 'Lenzburg', '2022-03-05 13:02:00.000000', '2022-03-05 13:02:00.000000', '6', 'Merkurstrasse');
-
-insert into postgres.public.people (id, date_created, last_updated, name, address_id)
-values (1001, '2022-03-05 13:02:00.000000', '2022-03-05 13:02:00.000000', 'Hendrik', 1001);
-
-insert into postgres.public.people (id, date_created, last_updated, name, address_id)
-values (1002, '2022-03-05 13:42:00.000000', '2022-03-05 13:42:00.000000', 'Simon', 1001);
