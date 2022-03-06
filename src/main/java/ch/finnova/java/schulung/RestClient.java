@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
 import java.util.Collections;
 
 @SpringBootApplication
@@ -33,7 +34,7 @@ public class RestClient {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder aBuilder) {
-        return aBuilder.build();
+        return aBuilder.setConnectTimeout(Duration.ofSeconds(3)).build();
     }
 
     @Bean
